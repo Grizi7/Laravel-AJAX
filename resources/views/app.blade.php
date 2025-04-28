@@ -121,6 +121,21 @@
             });
         });
 
+        $(document).on('click', '.delete-btn', function (e) {
+            e.preventDefault();
+            const url = $(this).data('url');
+            $.ajax({
+                url: url,
+                method: 'DELETE',
+                success: function (response) {
+                    alert('Category deleted successfully!');
+                    loadCategories('http://127.0.0.1:8000/api/categories');
+                },
+                error: function () {
+                    app.innerHTML = `<div class="alert alert-danger" role="alert">Error loading categories.</div>`;
+                }
+            });
+        });
     </script>
 </body>
 </html>

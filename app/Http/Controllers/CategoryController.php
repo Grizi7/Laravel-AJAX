@@ -61,7 +61,7 @@ class CategoryController extends Controller
         ]);
     }
 
-    public function show(Category $category): View
+    public function edit(Category $category): View
     {
         // Return the view to edit the category
         $categories = DB::table('categories')->select('id', 'name')->get();
@@ -83,6 +83,16 @@ class CategoryController extends Controller
 
         return response()->json([
             'message' => 'Category updated successfully',
+        ]);
+    }
+
+    public function destroy(Category $category): JsonResponse
+    {
+        // Delete the category
+        $category->delete();
+
+        return response()->json([
+            'message' => 'Category deleted successfully',
         ]);
     }
 }

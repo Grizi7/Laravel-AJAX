@@ -71,12 +71,9 @@
                 <td>{{ $category->name }}</td>
                 <td>{{ $category->parent ? $category->parent->name : 'None' }}</td>
                 <td>
-                <button class="btn btn-primary edit-btn" data-bs-toggle="modal" data-bs-target="#categoryModel" data-url="{{ route('categories.show', $category->id) }}">Edit</button>
-                <form action="{{ route('categories.destroy', $category) }}" method="POST" style="display:inline;">
-                    @csrf
-                    @method('DELETE')
-                    <button type="submit" class="btn btn-danger">Delete</button>
-                </form>
+                <button class="btn btn-primary edit-btn" data-bs-toggle="modal" data-bs-target="#categoryModel" data-url="{{ route('categories.edit', $category->id) }}">Edit</button>
+                <button class="btn btn-danger delete-btn"  data-url="{{ route('categories.destroy', $category->id) }}">Delete</button>
+                
                 </td>
             </tr>
         @endforeach

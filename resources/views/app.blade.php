@@ -87,6 +87,24 @@
             }
         );
 
+        $(document).on('click', '.search-btn', function () {
+            let search = $('input[name="search"]').val(); // Get the search input value
+            let parent_id = $('select[name="parent_id"]').val(); // Get the parent_id value
+
+            $.ajax({
+                url: `http://127.0.0.1:8000/api/categories?search=${search}&parent_id=${parent_id}`, // Use the form's action URL
+                type: 'GET',
+                success: function(response) {
+                    // Handle success (e.g., close modal, refresh categories list)
+                    app.innerHTML = response;
+                },
+                error: function(xhr) {
+                    // Handle error (e.g., show validation errors)
+                    app.innerHTML = `<div class="alert alert-danger" role="alert">Error loading categories.</div>`;
+                }
+            });
+        });
+
 
 
     </script>

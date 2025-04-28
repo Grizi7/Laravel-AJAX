@@ -9,10 +9,21 @@ use Illuminate\Http\Request;
 
 class CategoryController extends Controller
 {
-    public function index(): View
+    public function index(Request $request): View
     {
+        $search = $request->input('search');
+        $parentId = $request->input('parent_id');
+
         // Fetch all categories from the database
         $categories = Category::query()
+            ->where(function ($query) use ($search, $parentId) {
+                if ($search) {
+                    $query->where('name', 'like', '%' . $search . '%');
+                }
+                if ($parentId) {
+                    $query->where('parent_id', $parentId);
+                }
+            })
             ->with('children')
             ->paginate(5);
 

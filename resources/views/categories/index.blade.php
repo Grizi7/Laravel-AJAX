@@ -1,19 +1,18 @@
 <h1>Categories</h1>
 <div class="row mb-4">
     <div class="col-md-8">
-        <form class="row g-3" action="{{ route('categories.index') }}" method="GET">
+        <div class="row g-2">
+            <!-- Search Input -->
             <div class="col-md-4">
                 <div class="input-group">
-                    <input type="text" class="form-control" placeholder="Search categories" name="search" value="{{ request('search') }}">
-                    <button class="btn btn-outline-secondary" type="submit">
-                        <i class="bi bi-search"></i> Search
-                    </button>
+                    <input type="text" class="form-control" placeholder="Search categories" id="search-input" name="search" value="{{ request('search') }}">
                 </div>
             </div>
+            
+            <!-- Parent Category Filter -->
             <div class="col-md-4">
-                <select class="form-select" name="parent_id" onchange="this.form.submit()">
+                <select class="form-select" id="parent-filter" name="parent_id">
                     <option value="">All Categories</option>
-                    <option value="null" {{ request('parent_id') === 'null' ? 'selected' : '' }}>Top Level Only</option>
                     @foreach ($categoriesInSelect as $category)
                         <option value="{{ $category->id }}" {{ request('parent_id') == $category->id ? 'selected' : '' }}>
                             {{ $category->name }}
@@ -21,10 +20,12 @@
                     @endforeach
                 </select>
             </div>
+            
+            <!-- Clear Filters Button -->
             <div class="col-md-4">
-                <button type="reset" class="btn btn-secondary" onclick="window.location='{{ route('categories.index') }}'">Clear Filters</button>
+                <button class="btn btn-secondary search-btn w-100">Filter</button>
             </div>
-        </form>
+        </div>
     </div>
     <div class="col-md-4 text-end">
         <button class="btn btn-success add-category" data-bs-toggle="modal" data-bs-target="#categoryModel" >
@@ -59,6 +60,11 @@
         </tr>
     </thead>
     <tbody>
+        @if ($categories->isEmpty())
+            <tr>
+                <td colspan="4" class="text-center">No categories found.</td>
+            </tr>
+        @endif
         @foreach ($categories as $index => $category)
             <tr>
                 <th scope="row">{{ (($currentPage-1) * $categories->perPage()) + $index+1 }}</th>
@@ -75,20 +81,22 @@
             </tr>
         @endforeach
     </tbody>
-    <tfoot>
-        <tr>
-            <td colspan="4">
-                <nav aria-label="Page navigation example">
-                    <ul class="pagination">
-                        @foreach ( $pagination as $page )
-                            @if ($page['url'] == null)
-                                @continue
-                            @endif                            
-                            <li class="page-item"><a class="page-link {{ $currentPage == $page['label'] ? 'active' : '' }}" href="#" data-url="{{ $page['url'] }}" >{{ $page['label'] }}</a></li>
-                        @endforeach
-                    </ul>
-                </nav>
-            </td>
-        </tr>
-    </tfoot>
+    @if (!$categories->isEmpty())
+        <tfoot>
+            <tr>
+                <td colspan="4">
+                    <nav aria-label="Page navigation example">
+                        <ul class="pagination">
+                            @foreach ( $pagination as $page )
+                                @if ($page['url'] == null)
+                                    @continue
+                                @endif                            
+                                <li class="page-item"><a class="page-link {{ $currentPage == $page['label'] ? 'active' : '' }}" href="#" data-url="{{ $page['url'] }}" >{{ $page['label'] }}</a></li>
+                            @endforeach
+                        </ul>
+                    </nav>
+                </td>
+            </tr>
+        </tfoot>
+    @endif
 </table>

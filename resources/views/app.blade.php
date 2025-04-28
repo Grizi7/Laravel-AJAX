@@ -14,7 +14,7 @@
 </head>
 <body>
     
-    <div id="app">
+    <div id="app" class="container mt-5">
     </div>
     <!-- Bootstrap JS Bundle with Popper -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
@@ -23,18 +23,39 @@
     <script>
         
         const app = document.getElementById('app');
-        $(document).ready(function () {
+        const modal = document.getElementsByClassName('modal-body');
 
+        function fetchData(url, method = 'GET', onSuccess, onError) {
             $.ajax({
-                url: 'http://127.0.0.1:8000/api/categories', // API URL
-                method: 'GET', // Request method
-                success: function (response) {
-                    app.innerHTML = `${response}`;
+                url: url,
+                method: method,
+                success: onSuccess,
+                error: onError
+            });
+        }
+
+        function loadCategories(url = 'http://127.0.0.1:8000/api/categories') {
+            fetchData(url, 'GET',
+                function (response) {
+                    app.innerHTML = response;
                 },
-                error: function () {
+                function () {
                     app.innerHTML = `<div class="alert alert-danger" role="alert">Error loading categories.</div>`;
                 }
-            });
+            );
+        }
+
+        $(document).ready(function () {
+            fetchData(
+                'http://127.0.0.1:8000/api/categories',
+                'GET',
+                function(response) {
+                    app.innerHTML = `${response}`;
+                },
+                function() {
+                    app.innerHTML = `<div class="alert alert-danger" role="alert">Error loading categories.</div>`;
+                }
+            );
         });
 
         $(document).on('click', '.page-link', function (e) {
@@ -52,6 +73,22 @@
                 });
             }
         );
+        $(document).on('click', '.add-category', function (e) {
+                $.ajax({
+                    url: 'http://127.0.1:8000/api/categories/create', // API URL
+                    method: 'GET', // Request method
+                    success: function (response) {
+                        $('.modal-body').html(response);
+                    },
+                    error: function () {
+                        $('.modal-body').html(`<div class="alert alert-danger" role="alert">Error loading Form.</div>`);
+                    }
+                });
+            }
+        );
+
+
+
     </script>
 </body>
 </html>

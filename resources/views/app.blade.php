@@ -27,115 +27,77 @@
 
         function fetchData(url, method = 'GET', onSuccess, onError) {
             $.ajax({
-                url: url,
-                method: method,
+                url,
+                method,
                 success: onSuccess,
                 error: onError
             });
         }
 
-        function loadCategories(url = 'http://127.0.0.1:8000/api/categories') {
+        function showError(target, message = 'Error loading data.') {
+            $(target).html(`<div class="alert alert-danger" role="alert">${message}</div>`);
+        }
+
+        function loadIntoApp(url) {
             fetchData(url, 'GET',
-                function (response) {
-                    app.innerHTML = response;
-                },
-                function () {
-                    app.innerHTML = `<div class="alert alert-danger" role="alert">Error loading categories.</div>`;
-                }
+                response => app.innerHTML = response,
+                () => showError(app, 'Error loading categories.')
+            );
+        }
+
+        function loadIntoModal(url) {
+            fetchData(url, 'GET',
+                response => $('.modal-body').html(response),
+                () => showError('.modal-body', 'Error loading form.')
             );
         }
 
         $(document).ready(function () {
-            fetchData(
-                'http://127.0.0.1:8000/api/categories',
-                'GET',
-                function(response) {
-                    app.innerHTML = `${response}`;
-                },
-                function() {
-                    app.innerHTML = `<div class="alert alert-danger" role="alert">Error loading categories.</div>`;
-                }
-            );
+            loadIntoApp('http://127.0.0.1:8000/api/categories');
         });
 
         $(document).on('click', '.page-link', function (e) {
-                e.preventDefault();
-                const url = $(this).data('url');
-                $.ajax({
-                    url: url,
-                    method: 'GET',
-                    success: function (response) {
-                        app.innerHTML = `${response}`;
-                    },
-                    error: function () {
-                        app.innerHTML = `<div class="alert alert-danger" role="alert">Error loading categories.</div>`;
-                    }
-                });
+            e.preventDefault();
+            const url = $(this).data('url');
+            if (url) {
+                loadIntoApp(url);
             }
-        );
-        $(document).on('click', '.add-category', function (e) {
-                $.ajax({
-                    url: 'http://127.0.1:8000/api/categories/create', // API URL
-                    method: 'GET', // Request method
-                    success: function (response) {
-                        $('.modal-body').html(response);
-                    },
-                    error: function () {
-                        $('.modal-body').html(`<div class="alert alert-danger" role="alert">Error loading Form.</div>`);
-                    }
-                });
-            }
-        );
-
-        $(document).on('click', '.search-btn', function () {
-            let search = $('input[name="search"]').val(); // Get the search input value
-            let parent_id = $('select[name="parent_id"]').val(); // Get the parent_id value
-
-            $.ajax({
-                url: `http://127.0.0.1:8000/api/categories?search=${search}&parent_id=${parent_id}`, // Use the form's action URL
-                type: 'GET',
-                success: function(response) {
-                    // Handle success (e.g., close modal, refresh categories list)
-                    app.innerHTML = response;
-                },
-                error: function(xhr) {
-                    // Handle error (e.g., show validation errors)
-                    app.innerHTML = `<div class="alert alert-danger" role="alert">Error loading categories.</div>`;
-                }
-            });
         });
 
+        $(document).on('click', '.add-category', function () {
+            loadIntoModal('http://127.0.0.1:8000/api/categories/create');
+        });
 
         $(document).on('click', '.edit-btn', function (e) {
             e.preventDefault();
             const url = $(this).data('url');
-            $.ajax({
-                url: url,
-                method: 'GET',
-                success: function (response) {
-                    $('.modal-body').html(response);
-                },
-                error: function () {
-                    $('.modal-body').html(`<div class="alert alert-danger" role="alert">Error loading Form.</div>`);
-                }
-            });
+            if (url) {
+                loadIntoModal(url);
+            }
         });
 
         $(document).on('click', '.delete-btn', function (e) {
             e.preventDefault();
             const url = $(this).data('url');
-            $.ajax({
-                url: url,
-                method: 'DELETE',
-                success: function (response) {
-                    alert('Category deleted successfully!');
-                    loadCategories('http://127.0.0.1:8000/api/categories');
-                },
-                error: function () {
-                    app.innerHTML = `<div class="alert alert-danger" role="alert">Error loading categories.</div>`;
-                }
-            });
+            if (url) {
+                fetchData(url, 'DELETE',
+                    () => {
+                        alert('Category deleted successfully!');
+                        loadIntoApp('http://127.0.0.1:8000/api/categories');
+                    },
+                    () => showError(app, 'Error deleting category.')
+                );
+            }
         });
+
+        $(document).on('click', '.search-btn', function () {
+            const search = $('input[name="search"]').val();
+            const parent_id = $('select[name="parent_id"]').val();
+            const url = `http://127.0.0.1:8000/api/categories?search=${encodeURIComponent(search)}&parent_id=${encodeURIComponent(parent_id)}`;
+
+            loadIntoApp(url);
+        });
+
     </script>
 </body>
 </html>

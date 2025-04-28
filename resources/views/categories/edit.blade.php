@@ -15,9 +15,11 @@
         <select class="form-select" id="parent_id" name="parent_id">
             <option value="">None (Top Level Category)</option>
             @foreach ($categories as $categorySelect)
-                <option value="{{ $categorySelect->id }}" {{ $category->id == $categorySelect->id ? 'selected' : '' }}>
-                    {{ $categorySelect->name }}
-                </option>
+                @if($category->id != $categorySelect->id)
+                    <option value="{{ $categorySelect->id }}" {{ $category->parent_id == $categorySelect->id ? 'selected' : '' }}>
+                        {{ $categorySelect->name }}
+                    </option>
+                @endif
             @endforeach
         </select>
     </div>
@@ -44,7 +46,7 @@
                 $('#categoryModel').modal('hide');
                 
                 modal.innerHTML = ''; // Clear the modal content
-                loadCategories(url = 'http://127.0.0.1:8000/api/categories');
+                loadIntoApp('http://127.0.0.1:8000/api/categories')
             },
             error: function(xhr) {
                 // Handle error (e.g., show validation errors)

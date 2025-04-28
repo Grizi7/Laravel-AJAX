@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Categories</title>
     
     <!-- jQuery CDN -->
@@ -24,7 +25,9 @@
         
         const app = document.getElementById('app');
         const modal = document.getElementsByClassName('modal-body');
-
+        const selectedIds = [];
+        const deleteAllBtn = document.querySelector('.delete-all-btn');
+        
         function fetchData(url, method = 'GET', onSuccess, onError) {
             $.ajax({
                 url,
@@ -96,6 +99,55 @@
             const url = `http://127.0.0.1:8000/api/categories?search=${encodeURIComponent(search)}&parent_id=${encodeURIComponent(parent_id)}`;
 
             loadIntoApp(url);
+        });
+
+        $(document).on('change', '.form-check-input', function() {
+            const id = $(this).val();
+            const isChecked = $(this).is(':checked');
+            const index = selectedIds.indexOf(id);
+            if (isChecked) {
+                if (index === -1) {
+                    selectedIds.push(id);
+                }
+            } else {
+                if (index !== -1) {
+                    selectedIds.splice(index, 1);
+                }
+            }
+
+        });
+
+
+        $(document).on('click', '.delete-all-btn', function() {
+            if (selectedIds.length === 0) {
+                alert('Please select at least one category to delete.');
+                return;
+            }
+
+            const url = 'http://127.0.0.1:8000/api/categories/delete-all';
+            $.ajax({
+                url: url,
+                type: 'DELETE',
+                data: { ids: selectedIds },
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                success: function(response) {
+                    alert('Categories deleted successfully!');
+                    loadIntoApp('http://127.0.0.1:8000/api/categories');
+                },
+                error: function(xhr) {
+                    console.error(xhr); // Log the full error for debugging
+                    const errors = xhr.responseJSON?.errors || {};
+                    let errorMessage = 'Error deleting categories: ';
+                    for (const key in errors) {
+                        if (errors.hasOwnProperty(key)) {
+                            errorMessage += errors[key][0] + ' ';
+                        }
+                    }
+                    showError(app, errorMessage);
+                }
+            });
         });
 
     </script>

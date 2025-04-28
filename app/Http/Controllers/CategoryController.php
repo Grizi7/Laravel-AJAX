@@ -95,4 +95,19 @@ class CategoryController extends Controller
             'message' => 'Category deleted successfully',
         ]);
     }
+
+    public function destroyAll(Request $request)
+    {
+        // Check if IDs were provided
+        if (!$request->has('ids') || empty($request->ids)) {
+            return response()->json([
+                'errors' => ['ids' => ['No categories selected for deletion']]
+            ], 422);
+        }
+
+        // Delete the categories
+        Category::whereIn('id', $request->ids)->delete();
+
+        return response()->json(['message' => 'Categories deleted successfully']);
+    }
 }

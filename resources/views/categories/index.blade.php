@@ -25,6 +25,10 @@
             <div class="col-md-4">
                 <button class="btn btn-secondary search-btn w-100">Filter</button>
             </div>
+
+            <div class="col-md-4 ms-1">
+                <button class="btn btn-danger delete-all-btn">Delete All</button>
+            </div>
         </div>
     </div>
     <div class="col-md-4 text-end">
@@ -67,7 +71,7 @@
         @endif
         @foreach ($categories as $index => $category)
             <tr>
-                <th scope="row">{{ (($currentPage-1) * $categories->perPage()) + $index+1 }}</th>
+                <th scope="row"><input class="form-check-input me-1" type="checkbox" id="inlineCheckbox{{ $category->id }}" value="{{ $category->id }}">{{ (($currentPage-1) * $categories->perPage()) + $index+1 }}</th>
                 <td>{{ $category->name }}</td>
                 <td>{{ $category->parent ? $category->parent->name : 'None' }}</td>
                 <td>

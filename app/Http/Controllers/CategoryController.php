@@ -15,7 +15,12 @@ class CategoryController extends Controller
             ->with('children')
             ->paginate(5);
 
+        $pagination = $categories->toArray()['links'];
         // Return the view with categories data
-        return view('categories.index', compact('categories'));
+        return view('categories.index', [
+            'categories' => $categories,
+            'pagination' => $pagination,
+            'currentPage' => $categories->currentPage(),
+        ]);
     }
 }

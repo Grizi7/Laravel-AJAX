@@ -21,21 +21,37 @@
 
     @vite('resources/js/app.js')
     <script>
+        
+        const app = document.getElementById('app');
         $(document).ready(function () {
-            const app = document.getElementById('app');
 
             $.ajax({
                 url: 'http://127.0.0.1:8000/api/categories', // API URL
                 method: 'GET', // Request method
                 success: function (response) {
-                    console.log(response);
-                    app.innerHTML = `${response}`
+                    app.innerHTML = `${response}`;
                 },
                 error: function () {
-                    app.innerHTML(`<div class="alert alert-danger" role="alert">Error loading categories.</div>`);
+                    app.innerHTML = `<div class="alert alert-danger" role="alert">Error loading categories.</div>`;
                 }
             });
         });
+
+        $(document).on('click', '.page-link', function (e) {
+                e.preventDefault();
+                const url = $(this).data('url');
+                $.ajax({
+                    url: url,
+                    method: 'GET',
+                    success: function (response) {
+                        app.innerHTML = `${response}`;
+                    },
+                    error: function () {
+                        app.innerHTML = `<div class="alert alert-danger" role="alert">Error loading categories.</div>`;
+                    }
+                });
+            }
+        );
     </script>
 </body>
 </html>

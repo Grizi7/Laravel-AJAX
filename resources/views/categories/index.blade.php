@@ -71,7 +71,7 @@
                 <td>{{ $category->name }}</td>
                 <td>{{ $category->parent ? $category->parent->name : 'None' }}</td>
                 <td>
-                <a href="{{ route('categories.edit', $category) }}" class="btn btn-primary">Edit</a>
+                <button class="btn btn-primary edit-btn" data-bs-toggle="modal" data-bs-target="#categoryModel" data-url="{{ route('categories.show', $category->id) }}">Edit</button>
                 <form action="{{ route('categories.destroy', $category) }}" method="POST" style="display:inline;">
                     @csrf
                     @method('DELETE')

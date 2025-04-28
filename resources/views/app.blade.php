@@ -106,6 +106,20 @@
         });
 
 
+        $(document).on('click', '.edit-btn', function (e) {
+            e.preventDefault();
+            const url = $(this).data('url');
+            $.ajax({
+                url: url,
+                method: 'GET',
+                success: function (response) {
+                    $('.modal-body').html(response);
+                },
+                error: function () {
+                    $('.modal-body').html(`<div class="alert alert-danger" role="alert">Error loading Form.</div>`);
+                }
+            });
+        });
 
     </script>
 </body>

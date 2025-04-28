@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Category;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Contracts\View\View;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class CategoryController extends Controller
@@ -45,7 +46,7 @@ class CategoryController extends Controller
         return view('categories.create', ['categories' => $categories]);
     }
 
-    public function store(Request $request)
+    public function store(Request $request): JsonResponse
     {
         // Validate and store the new category
         $request->validate([
@@ -57,6 +58,31 @@ class CategoryController extends Controller
 
         return response()->json([
             'message' => 'Category created successfully',
+        ]);
+    }
+
+    public function show(Category $category): View
+    {
+        // Return the view to edit the category
+        $categories = DB::table('categories')->select('id', 'name')->get();
+        return view('categories.edit', [
+            'category' => $category,
+            'categories' => $categories,
+        ]);
+    }
+
+    public function update(Request $request, Category $category): JsonResponse
+    {
+        // Validate and update the category
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'parent_id' => 'nullable|exists:categories,id',
+        ]);
+
+        $category->update($request->only('name', 'parent_id'));
+
+        return response()->json([
+            'message' => 'Category updated successfully',
         ]);
     }
 }

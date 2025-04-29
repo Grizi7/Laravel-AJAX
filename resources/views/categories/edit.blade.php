@@ -46,7 +46,7 @@
                 $('#categoryModel').modal('hide');
                 
                 modal.innerHTML = ''; // Clear the modal content
-                loadIntoApp('http://127.0.0.1:8000/api/categories')
+                loadIntoApp('https://grizi7.space/api/categories')
             },
             error: function(xhr) {
                 // Handle error (e.g., show validation errors)

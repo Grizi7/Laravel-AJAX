@@ -55,7 +55,7 @@
         }
 
         $(document).ready(function () {
-            loadIntoApp('http://127.0.0.1:8000/api/categories');
+            loadIntoApp('https://grizi7.space/api/categories');
         });
 
         $(document).on('click', '.page-link', function (e) {
@@ -67,7 +67,7 @@
         });
 
         $(document).on('click', '.add-category', function () {
-            loadIntoModal('http://127.0.0.1:8000/api/categories/create');
+            loadIntoModal('https://grizi7.space/api/categories/create');
         });
 
         $(document).on('click', '.edit-btn', function (e) {
@@ -85,7 +85,7 @@
                 fetchData(url, 'DELETE',
                     () => {
                         alert('Category deleted successfully!');
-                        loadIntoApp('http://127.0.0.1:8000/api/categories');
+                        loadIntoApp('https://grizi7.space/api/categories');
                     },
                     () => showError(app, 'Error deleting category.')
                 );
@@ -95,7 +95,7 @@
         $(document).on('click', '.search-btn', function () {
             const search = $('input[name="search"]').val();
             const parent_id = $('select[name="parent_id"]').val();
-            const url = `http://127.0.0.1:8000/api/categories?search=${encodeURIComponent(search)}&parent_id=${encodeURIComponent(parent_id)}`;
+            const url = `https://grizi7.space/api/categories?search=${encodeURIComponent(search)}&parent_id=${encodeURIComponent(parent_id)}`;
 
             loadIntoApp(url);
         });
@@ -123,7 +123,7 @@
                 return;
             }
 
-            const url = 'http://127.0.0.1:8000/api/categories/delete-all';
+            const url = 'https://grizi7.space/api/categories/delete-all';
             $.ajax({
                 url: url,
                 type: 'DELETE',
@@ -133,7 +133,7 @@
                 },
                 success: function(response) {
                     alert('Categories deleted successfully!');
-                    loadIntoApp('http://127.0.0.1:8000/api/categories');
+                    loadIntoApp('https://grizi7.space/api/categories');
                 },
                 error: function(xhr) {
                     console.error(xhr); // Log the full error for debugging
